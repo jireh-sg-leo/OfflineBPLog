@@ -19,6 +19,7 @@ import DateAndTimePicker from '../../components/UI/DateAndTimePicker';
 import Colors from '../../constants/Colors';
 import { LocalizationContext } from '../../constants/Localisation';
 import FontSize from '../../constants/FontSize';
+import Calendar from "../../components/UI/Calendar";
 
 // class FlatListItem extends PureComponent {
 //     render() {
@@ -33,13 +34,17 @@ const FlatListItem = ({ itemData, onFlatListItemPress, noRecordLocalisedString }
             ...styles.otherProfileCard,
             height: !!itemData.item.remark ? 150 : 100,
         }}>
-        <View style={styles.dateContainer}>
-            {!!itemData.item.id ?
-                <Text style={styles.title}>{moment(itemData.item.id).format('lll')}</Text> :
-                <Text style={styles.title}>{noRecordLocalisedString}</Text>
-            }
-        </View>
+
         <View style={styles.dataContainer}>
+            <View style={{...styles.digitContainer, flexDirection:'column', justifyContent: 'center', alignItems: 'center'}}>
+
+                <View style={styles.dateContainer}>
+                    {!!itemData.item.id ?
+                        <Calendar date={itemData.item.id}/> :
+                        <Text style={styles.timeText}>{noRecordLocalisedString}</Text>
+                    }
+                </View>
+            </View>
             <View style={styles.digitContainer}>
                 {itemData.item.systolic_blood_pressure ?
                     <Text style={{
@@ -202,6 +207,8 @@ const HealthParametersScreen = props => {
                 </View>
                 <View style={styles.titleDataContainer}>
                     <View style={styles.digitContainer}>
+                    </View>
+                    <View style={styles.digitContainer}>
                         <Text style={styles.LowerBtnsText}>{t('systolic')}</Text>
                         <Text style={styles.unitText}>mmHg</Text>
                     </View>
@@ -362,20 +369,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     digitContainer: {
-        width: '33%',
+        width: '25%',
         height: '100%',
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
     digit: {
         width: '100%',
-        fontSize: FontSize.varyBigTitle,
-        color: Colors.grey,
-        textAlign: 'center'
-    },
-    LowerBtnsText: {
-        width: '100%',
-        fontSize: FontSize.subsubtitle,
+        fontSize: FontSize.title,
         color: Colors.grey,
         textAlign: 'center'
     },
@@ -407,7 +408,7 @@ const styles = StyleSheet.create({
     },
     LowerBtnsText: {
         width: '100%',
-        fontSize: FontSize.content,
+        fontSize: FontSize.smallContent,
         color: Colors.grey,
         textAlign: 'center'
     },
@@ -422,6 +423,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    timeText: {
+        fontSize: FontSize.tinyContent,
+        textAlign: 'center'
+    }
+
 });
 
 export default HealthParametersScreen;

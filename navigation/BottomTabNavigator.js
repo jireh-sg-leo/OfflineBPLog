@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Platform, Dimensions } from 'react-native';
+import {Text, View, StyleSheet, Platform, Dimensions, TouchableOpacity} from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import {getFocusedRouteNameFromRoute, useNavigation} from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { LocalizationContext } from '../constants/Localisation';
@@ -14,6 +14,10 @@ import BloodPressureScreen from '../screens/BloodPressure/BloodPressureScreen';
 import DashboardScreen from '../screens/Dashboard/DashboardScreen';
 import RecordOutputScreen from '../screens/RecordOutput/RecordOutputScreen';
 import Colors from '../constants/Colors';
+import {LoginScreen} from "../screens/Login/LoginScreen";
+import {BlankScreen} from "../screens/BlankScreen/BlankScreen";
+import {AuthContext} from "../contexts/AuthContext";
+import * as NavigationActions from "./BottomTabNavigator";
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const { height, width } = Dimensions.get('window');
@@ -56,10 +60,16 @@ export function navigate(name, params) {
     navigationRef.current?.navigate(name, params);
 }
 
+export function goBack() {
+    navigationRef.current?.goBack();
+}
+
 const Tab = createBottomTabNavigator();
 
 export const BottomTabNavigator = () => {
+    const {logout} = React.useContext(AuthContext);
     const { t } = React.useContext(LocalizationContext);
+    const navigation = useNavigation();
 
     function getTabBarVisibility(route) {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'Home';
@@ -113,6 +123,22 @@ export const BottomTabNavigator = () => {
                 },
                 tabBarLabel: t('output'),
             })}
+            />
+            <Tab.Screen name="Logout" component={BlankScreen}
+                        options={({ route }) => ({
+                            tabBarButton: props => (
+                                <TouchableOpacity {...props} onPress={() => {
+                                    logout();
+                                    navigation.pop();
+                                }}/>
+                            ),
+                            tabBarIcon: ({ focused, color }) => {
+                                return (
+                                    <Ionicons name="log-out-outline" size={32} color={focused ? Colors.focus : "grey"} />
+                                )
+                            },
+                            tabBarLabel: t('signout'),
+                        })}
             />
         </Tab.Navigator>
     );

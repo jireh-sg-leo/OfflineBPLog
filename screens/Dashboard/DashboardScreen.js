@@ -20,6 +20,7 @@ import Colors from '../../constants/Colors';
 import { LocalizationContext } from '../../constants/Localisation';
 import FontSize from '../../constants/FontSize';
 import DropdownList from '../../components/MultipleChoice/DropdownList';
+import {AuthContext} from "../../contexts/AuthContext";
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 

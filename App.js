@@ -6,11 +6,14 @@ import ReduxThunk from 'redux-thunk';
 import * as Localization from 'expo-localization'; // or whatever library you want
 import i18n from 'i18n-js'; // or whatever library you want
 
-import bloodPressureReducer from './store/reducers/bloodPressure'; 
-import AppNavigator from './navigation/AppNavigator';
+import bloodPressureReducer from './store/reducers/bloodPressure';
 import { LocalizationContext } from './constants/Localisation';
 import { initBloodPressureDB } from './helpers/dbBloodPressure';
 import { initMessageDB } from './helpers/dbMessage';
+import {createStackNavigator} from "@react-navigation/stack";
+import AppNavigator from "./navigation/AppNavigator";
+import {AuthContext} from './contexts/AuthContext';
+import {useAuth} from './hooks/useAuth';
 
 initBloodPressureDB()
   .then(() => {
@@ -48,7 +51,8 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 // ));
 
 export default function App() {
-  const [locale, setLocale] = React.useState(
+    const {auth, state} = useAuth();
+    const [locale, setLocale] = React.useState(
     () => {
       console.log("Localization.locale value");
       const localeToBeSet = Localization.locale.includes('zh') ?
@@ -75,7 +79,9 @@ export default function App() {
   return (
     <LocalizationContext.Provider value={localizationContext}>
       <Provider store={store}>
+          <AuthContext.Provider value={auth}>
         <AppNavigator />
+          </AuthContext.Provider>
       </Provider>
     </LocalizationContext.Provider>
   );
